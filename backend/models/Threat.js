@@ -11,4 +11,15 @@ const logThreat = (message, timestamp, callback) => {
   });
 };
 
-module.exports = { logThreat };
+const getThreats = (callback) => {
+  const sql = 'SELECT * FROM threats ORDER BY timestamp DESC';
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Database error:', err);
+      return callback(err, null);
+    }
+    callback(null, results);
+  });
+};
+
+module.exports = { logThreat, getThreats };

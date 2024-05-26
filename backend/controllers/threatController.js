@@ -13,4 +13,14 @@ const logThreat = (req, res) => {
   });
 };
 
-module.exports = { logThreat };
+const getThreats = (req, res) => {
+  Threat.getThreats((err, results) => {
+    if (err) {
+      console.error('Error fetching threats:', err);
+      return res.status(500).send('Error fetching threats.');
+    }
+    res.status(200).json(results);
+  });
+};
+
+module.exports = { logThreat, getThreats };
