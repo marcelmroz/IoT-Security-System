@@ -1,14 +1,17 @@
 const Threat = require('../models/Threat');
+const moment = require('moment-timezone');
 
 const logThreat = (req, res) => {
   const { message } = req.body;
-  const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  const timestamp = moment().tz('Europe/Berlin').format('YYYY-MM-DD HH:mm:ss');
 
   Threat.logThreat(message, timestamp, (err, result) => {
     if (err) {
       console.error('Error logging threat:', err);
       return res.status(500).send('Error logging threat.');
     }
+    const io = req.app.get('io');
+    io.emit('new-threat', { message, timestamp });
     res.status(200).send('Threat logged successfully');
   });
 };

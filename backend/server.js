@@ -1,6 +1,13 @@
 const app = require('./app');
-const port = process.env.PORT || 3001;
+const http = require('http');
+const socketIo = require('socket.io');
 
-app.listen(port, () => {
+const port = process.env.PORT || 3001;
+const server = http.createServer(app);
+const io = socketIo(server);
+
+app.set('io', io);
+
+server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

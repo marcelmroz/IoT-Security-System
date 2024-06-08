@@ -8,7 +8,7 @@ const app = express();
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-  res.send('Server is running successfully');
+  res.sendFile(__dirname + '/index.html');
 });
 
 app.get('/test-db', (req, res) => {
