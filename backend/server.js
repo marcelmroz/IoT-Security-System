@@ -1,5 +1,6 @@
 const app = require('./app');
 const http = require('http');
+const dotenv = require('dotenv');
 const socketIo = require('socket.io');
 
 const port = process.env.PORT || 3001;
