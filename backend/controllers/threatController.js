@@ -20,11 +20,11 @@ const logThreat = (req, res) => {
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD,
       },
-    });
+    });    
 
     const mailOptions = {
       from: process.env.EMAIL_USERNAME,
-      to: 'temp@email.com',
+      to: process.env.RECIPIENT_EMAIL,
       subject: 'Security Alert',
       text: `Potential threat detected: ${message} at ${timestamp}`,
     };
