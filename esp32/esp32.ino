@@ -4,6 +4,8 @@
 const char* ssid = "WiFi_Name";
 const char* password = "WiFi_Password";
 const char* serverUrl = "Server_Endpoint";
+const char* esp32Secret = "your_esp32_secret_here";
+
 
 const int LED_BUILTIN = 2;
 const int trigPin = 5;
@@ -63,7 +65,9 @@ void sendDataToServer() {
   
   http.begin(serverUrl);
   http.addHeader("Content-Type", "application/json");
+  http.addHeader("x-esp32-secret", esp32Secret); // Add the secret header
   int httpResponseCode = http.POST(jsonPayload);
+
   Serial.print("HTTP Response code: ");
   Serial.println(httpResponseCode);
   
