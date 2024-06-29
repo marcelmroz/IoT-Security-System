@@ -4,15 +4,21 @@ const db = require('./config/db');
 const threatRoutes = require('./routes/threatRoutes');
 const authRoutes = require('./routes/authRoutes');
 
+const path = require('path');
+
 const app = express();
 
 app.use(bodyParser.json());
 
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use('/api/threats', threatRoutes);
+app.use('/api/auth', authRoutes);
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
+
 
 app.get('/test-db', (req, res) => {
   db.query('SELECT 1 + 1 AS solution', (err, results) => {
@@ -21,7 +27,5 @@ app.get('/test-db', (req, res) => {
   });
 });
 
-app.use('/api/threats', threatRoutes);
-app.use('/api/auth', authRoutes);
 
 module.exports = app;
