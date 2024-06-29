@@ -9,7 +9,7 @@ const logThreat = (req, res) => {
   Threat.logThreat(message, timestamp, (err, result) => {
     if (err) {
       console.error('Error logging threat:', err);
-      return res.status(500).send('Error logging threat.');
+      return res.status(500).json({ error: 'Error logging threat.' });
     }
     const io = req.app.get('io');
     io.emit('new-threat', { message, timestamp });
@@ -37,7 +37,7 @@ const logThreat = (req, res) => {
       }
     });
 
-    res.status(200).send('Threat logged successfully');
+    res.status(200).json({ message: 'Threat logged successfully' });
   });
 };
 
@@ -45,7 +45,7 @@ const getThreats = (req, res) => {
   Threat.getThreats((err, results) => {
     if (err) {
       console.error('Error fetching threats:', err);  
-      return res.status(500).send('Error fetching threats.');
+      return res.status(500).json({ error: 'Error fetching threats.' });
     }
     res.status(200).json(results);
   });

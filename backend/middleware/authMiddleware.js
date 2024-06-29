@@ -1,10 +1,21 @@
 const jwt = require('jsonwebtoken');
 
 const authenticateJWT = (req, res, next) => {
-  const token = req.header('Authorization').replace('Bearer ', '');
+  const authHeader = req.header('Authorization');
+  const secretHeader = req.header('x-esp32-secret');
+
+  if (secretHeader && secretHeader === process.env.ESP32_SECRET) {
+    return next();
+  }
+
+  if (!authHeader) {
+    return res.status(403).send('Access denied. No token provided.');
+  }
+
+  const token = authHeader.replace('Bearer ', '');
 
   if (!token) {
-    return res.status(403).send('Access denied.');
+    return res.status(403).send('Access denied. Token not found.');
   }
 
   try {
