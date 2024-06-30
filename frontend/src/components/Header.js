@@ -19,6 +19,9 @@ const Header = () => {
           <li>
             <Link to="/threat-history">Threat History</Link>
           </li>
+          <li>
+            <Link to="/admin">Admin Panel</Link>
+          </li>
         </ul>
       </nav>
     </header>
