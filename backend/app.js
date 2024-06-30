@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const db = require('./config/db');
 const threatRoutes = require('./routes/threatRoutes');
 const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const path = require('path');
 
@@ -12,6 +13,7 @@ app.use(bodyParser.json());
 
 app.use('/api/threats', threatRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
