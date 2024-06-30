@@ -36,7 +36,7 @@ const ThreatHistory = () => {
     <div>
       <h2>Threat History</h2>
       <ul>
-        {threats.map((threat, index) => (
+        {[...threats].reverse().map((threat, index) => (
           <li key={index}>{threat.message} - {threat.timestamp}</li>
         ))}
       </ul>
