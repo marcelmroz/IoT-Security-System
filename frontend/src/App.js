@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'
 import Login from './components/Login';
 import Register from './components/Register';
 import ThreatHistory from './components/ThreatHistory';
@@ -9,6 +10,16 @@ import Header from './components/Header';
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    if (token) {
+      const decoded = jwtDecode(token);
+      setRole(decoded.role);
+    } else {
+      setRole(null);
+    }
+  }, [token]);
 
   const setTokenInStorage = (token) => {
     localStorage.setItem('token', token);
@@ -17,7 +28,7 @@ const App = () => {
 
   return (
     <Router>
-      <Header />
+      <Header token={token} setToken={setToken} role={role} />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<Login setToken={setTokenInStorage} />} />
