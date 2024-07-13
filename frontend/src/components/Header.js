@@ -28,12 +28,12 @@ const Header = ({ token, setToken, role }) => {
               </li>
             </>
           )}
-          {token && role === 'admin' && (
+          {token && (role === 'admin' || role === 'super-admin') && (
             <li>
               <button onClick={() => navigate('/admin')}>Admin Panel</button>
             </li>
           )}
-          {token && (role === 'admin' || role === 'approved-user') && (
+          {token && (role === 'admin' || role === 'super-admin' || role === 'approved-user') && (
             <li>
               <button onClick={() => navigate('/threat-history')}>Threat History</button>
             </li>
