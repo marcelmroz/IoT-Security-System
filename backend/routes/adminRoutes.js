@@ -21,16 +21,22 @@ router.patch('/users/:id/role', authenticateJWT, authorizeRoles(['admin', 'super
     return res.status(400).send('Invalid role.');
   }
 
-  if (role === 'super-admin' && req.user.role !== 'super-admin') {
-    return res.status(403).send('Access denied.');
-  }
-
-  User.updateUserRole(id, role, (err, result) => {
-    if (err) {
-      console.error('Error updating user role:', err);
-      return res.status(500).send('Error updating user role.');
+  User.findUserById(id, (err, user) => {
+    if (err || !user) {
+      return res.status(404).send('User not found.');
     }
-    res.status(200).send('User role updated.');
+
+    if (user.role === 'super-admin' && req.user.role !== 'super-admin') {
+      return res.status(403).send('You are not allowed to change the role of the super-admin.');
+    }
+
+    User.updateUserRole(id, role, (err, result) => {
+      if (err) {
+        console.error('Error updating user role:', err);
+        return res.status(500).send('Error updating user role.');
+      }
+      res.status(200).send('User role updated.');
+    });
   });
 });
 

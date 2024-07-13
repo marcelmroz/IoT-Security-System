@@ -12,6 +12,11 @@ const findUserByEmail = (email, callback) => {
   db.query(sql, [email], callback);
 };
 
+const findUserById = (id, callback) => {
+  const sql = 'SELECT * FROM users WHERE id = ?';
+  db.query(sql, [id], callback);
+};
+
 const getUsers = (callback) => {
   const sql = 'SELECT id, email, role FROM users';
   db.query(sql, callback);
@@ -22,4 +27,4 @@ const updateUserRole = (id, role, callback) => {
   db.query(sql, [role, id], callback);
 };
 
-module.exports = { createUser, findUserByEmail, getUsers, updateUserRole };
+module.exports = { createUser, findUserByEmail, findUserById, getUsers, updateUserRole };
