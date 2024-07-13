@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const AdminPanel = () => {
   const [users, setUsers] = useState([]);
@@ -21,17 +22,25 @@ const AdminPanel = () => {
   }, []);
 
   const handleRoleChange = () => {
+    const user = users.find(u => u.id === selectedUserId);
+
+    if (user.role === 'super-admin') {
+      toast.error('You are not allowed to change the role of the super-admin.');
+      return;
+    }
+
     axios.patch(`/api/admin/users/${selectedUserId}/role`, { role: newRole }, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       }
     })
     .then(response => {
-      alert('User role updated');
+      toast.success('User role updated');
       setUsers(users.map(user => user.id === selectedUserId ? { ...user, role: newRole } : user));
     })
     .catch(error => {
       console.error('Error updating user role:', error);
+      toast.error('Error updating user role');
     });
   };
 
@@ -42,7 +51,9 @@ const AdminPanel = () => {
         {users.map(user => (
           <li key={user.id}>
             {user.email} - {user.role}
-            <button onClick={() => setSelectedUserId(user.id)}>Change Role</button>
+            {user.role !== 'super-admin' && (
+              <button onClick={() => setSelectedUserId(user.id)}>Change Role</button>
+            )}
           </li>
         ))}
       </ul>
@@ -54,6 +65,7 @@ const AdminPanel = () => {
             <option value="user">User</option>
             <option value="approved-user">Approved User</option>
             <option value="admin">Admin</option>
+            <option value="super-admin">Super Admin</option>
           </select>
           <button onClick={handleRoleChange}>Update Role</button>
         </div>
