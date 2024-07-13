@@ -11,7 +11,7 @@ const register = (req, res) => {
       return res.status(500).send('Error registering user or user already exists.');
     }
 
-    User.createUser(email, password, (err, result) => {
+    User.createUser(email, password, 'user', (err, result) => {
       if (err) {
         return res.status(500).send('Error registering user.');
       }
@@ -43,30 +43,37 @@ const login = (req, res) => {
   });
 };
 
-const initAdmin = () => {
-  const email = process.env.ADMIN_EMAIL;
-  const password = bcrypt.hashSync(process.env.ADMIN_PASSWORD, 8);
+const initSuperAdmin = () => {
+  const email = process.env.SUPER_ADMIN_EMAIL;
+  const password = process.env.SUPER_ADMIN_PASSWORD;
+
+  if (!email || !password) {
+    console.error('Super-admin email or password not set in environment variables');
+    return;
+  }
+
+  const hashedPassword = bcrypt.hashSync(password, 8);
 
   User.findUserByEmail(email, (err, result) => {
     if (err) {
-      console.error('Error finding admin user:', err);
+      console.error('Error finding super-admin user:', err);
       return;
     }
 
     if (result.length > 0) {
-      console.log('Admin user already exists');
+      console.log('Super-admin user already exists');
       return;
     }
 
     const sql = 'INSERT INTO users (email, password, role) VALUES (?, ?, ?)';
-    db.query(sql, [email, password, 'admin'], (err, result) => {
+    db.query(sql, [email, hashedPassword, 'super-admin'], (err, result) => {
       if (err) {
-        console.error('Error creating admin user:', err);
+        console.error('Error creating super-admin user:', err);
       } else {
-        console.log('Admin user created successfully');
+        console.log('Super-admin user created successfully');
       }
     });
   });
 };
 
-module.exports = { register, login, initAdmin };
+module.exports = { register, login, initSuperAdmin };

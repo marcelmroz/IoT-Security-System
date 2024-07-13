@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const { authenticateJWT, authorizeRoles } = require('../middleware/authMiddleware');
 
-router.get('/users', authenticateJWT, authorizeRoles(['admin']), (req, res) => {
+router.get('/users', authenticateJWT, authorizeRoles(['admin', 'super-admin']), (req, res) => {
   User.getUsers((err, results) => {
     if (err) {
       console.error('Error fetching users:', err);
@@ -13,12 +13,16 @@ router.get('/users', authenticateJWT, authorizeRoles(['admin']), (req, res) => {
   });
 });
 
-router.patch('/users/:id/role', authenticateJWT, authorizeRoles(['admin']), (req, res) => {
+router.patch('/users/:id/role', authenticateJWT, authorizeRoles(['admin', 'super-admin']), (req, res) => {
   const { id } = req.params;
   const { role } = req.body;
 
-  if (!['user', 'approved-user', 'admin'].includes(role)) {
+  if (!['user', 'approved-user', 'admin', 'super-admin'].includes(role)) {
     return res.status(400).send('Invalid role.');
+  }
+
+  if (role === 'super-admin' && req.user.role !== 'super-admin') {
+    return res.status(403).send('Access denied.');
   }
 
   User.updateUserRole(id, role, (err, result) => {
