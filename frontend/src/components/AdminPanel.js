@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import '../styles/AdminPanel.css'; 
 
 const AdminPanel = () => {
   const [users, setUsers] = useState([]);
@@ -24,7 +25,7 @@ const AdminPanel = () => {
   const handleRoleChange = () => {
     const user = users.find(u => u.id === selectedUserId);
 
-    if (user.role === 'super-admin' && !localStorage.getItem('role') !== 'super-admin') {
+    if (user.role === 'super-admin' && localStorage.getItem('role') !== 'super-admin') {
       toast.error('You are not allowed to change the role of the super-admin.');
       return;
     }
@@ -45,12 +46,12 @@ const AdminPanel = () => {
   };
 
   return (
-    <div>
+    <div className="admin-panel">
       <h2>Admin Panel</h2>
       <ul>
         {users.map(user => (
           <li key={user.id}>
-            {user.email} - {user.role}
+            <span>{user.email} - {user.role}</span>
             {(user.role !== 'super-admin' || localStorage.getItem('role') === 'super-admin') && (
               <button onClick={() => setSelectedUserId(user.id)}>Change Role</button>
             )}
@@ -58,7 +59,7 @@ const AdminPanel = () => {
         ))}
       </ul>
       {selectedUserId && (
-        <div>
+        <div className="role-change-form">
           <h3>Change Role</h3>
           <select value={newRole} onChange={(e) => setNewRole(e.target.value)}>
             <option value="">Select Role</option>

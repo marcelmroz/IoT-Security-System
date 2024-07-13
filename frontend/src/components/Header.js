@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import '../styles/Header.css'; 
 
 const Header = ({ token, setToken, role }) => {
@@ -8,6 +9,7 @@ const Header = ({ token, setToken, role }) => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setToken(null);
+    toast.success("Logout successful!");
     navigate('/login');
   };
 

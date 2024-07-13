@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import '../styles/AuthForm.css';
 
 const Login = ({ setToken }) => {
   const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ const Login = ({ setToken }) => {
   };
 
   return (
-    <div>
+    <div className="auth-form">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input

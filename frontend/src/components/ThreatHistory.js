@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
+import '../styles/ThreatHistory.css';
 
 const socket = io('http://localhost:3001');
 
@@ -33,7 +34,7 @@ const ThreatHistory = () => {
   }, []);
 
   return (
-    <div>
+    <div className="threat-history">
       <h2>Threat History</h2>
       <ul>
         {[...threats].reverse().map((threat, index) => (
