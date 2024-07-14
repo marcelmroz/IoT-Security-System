@@ -26,7 +26,6 @@ const register = (req, res) => {
         return res.status(500).send('Error hashing password.');
       }
 
-      console.log('Hashed Password:', hashedPassword);
       const verificationToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
       const verificationLink = `http://localhost:3001/api/auth/verify?token=${verificationToken}`;
@@ -70,7 +69,6 @@ const verifyEmail = (req, res) => {
         console.error('Error verifying user:', err);
         return res.status(500).send('Error verifying user.');
       }
-      console.log('User verified:', email);
       res.status(200).send('Email verified successfully. You can now log in.');
     });
   } catch (err) {

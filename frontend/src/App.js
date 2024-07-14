@@ -32,7 +32,7 @@ const App = () => {
     <Router>
       <Header token={token} setToken={setToken} role={role} />
       <Routes>
-        <Route path="/" element={<MainPage />} />
+        <Route path="/" element={<MainPage token={token} role={role} />} />
         <Route path="/login" element={<Login setToken={setTokenInStorage} />} />
         <Route path="/register" element={<Register />} />
         <Route path="/threat-history" element={<ThreatHistory />} />
