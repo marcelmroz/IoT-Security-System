@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
+import moment from 'moment';
 import '../styles/ThreatHistory.css';
 
 const socket = io('http://localhost:3001');
@@ -38,7 +39,9 @@ const ThreatHistory = () => {
       <h2>Threat History</h2>
       <ul>
         {[...threats].reverse().map((threat, index) => (
-          <li key={index}>{threat.message} - {threat.timestamp}</li>
+          <li key={index}>
+            {threat.message} - {moment(threat.timestamp).format('YYYY-MM-DD HH:mm:ss')}
+          </li>
         ))}
       </ul>
     </div>
