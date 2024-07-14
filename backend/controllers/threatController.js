@@ -1,6 +1,7 @@
 const Threat = require('../models/Threat');
 const moment = require('moment-timezone');
 const nodemailer = require('nodemailer');
+const db = require('../config/db');
 
 const logThreat = (req, res) => {
   const { message } = req.body;
@@ -14,30 +15,39 @@ const logThreat = (req, res) => {
     const io = req.app.get('io');
     io.emit('new-threat', { message, timestamp });
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });    
-
-    const mailOptions = {
-      from: process.env.EMAIL_USERNAME,
-      to: process.env.RECIPIENT_EMAIL,
-      subject: 'Security Alert',
-      text: `Potential threat detected: ${message} at ${timestamp}`,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log('Error sending email:', error);
-      } else {
-        console.log('Email sent:', info.response);
+    db.query('SELECT recipient_email FROM email_settings WHERE id = 1', (err, result) => {
+      if (err) {
+        console.error('Error fetching recipient email:', err);
+        return res.status(500).json({ error: 'Error fetching recipient email.' });
       }
-    });
+      
+      const recipientEmail = result[0].recipient_email;
 
-    res.status(200).json({ message: 'Threat logged successfully' });
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      });
+
+      const mailOptions = {
+        from: process.env.EMAIL_USERNAME,
+        to: recipientEmail,
+        subject: 'Security Alert',
+        text: `Potential threat detected: ${message} at ${timestamp}`,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log('Error sending email:', error);
+        } else {
+          console.log('Email sent:', info.response);
+        }
+      });
+
+      res.status(200).json({ message: 'Threat logged successfully' });
+    });
   });
 };
 
@@ -51,4 +61,27 @@ const getThreats = (req, res) => {
   });
 };
 
-module.exports = { logThreat, getThreats };
+const getEmailSettings = (req, res) => {
+  const sql = 'SELECT recipient_email FROM email_settings WHERE id = 1';
+  db.query(sql, (err, result) => {
+    if (err) {
+      console.error('Error fetching email settings:', err);
+      return res.status(500).send('Error fetching email settings.');
+    }
+    res.status(200).json(result[0]);
+  });
+};
+
+const updateEmailSettings = (req, res) => {
+  const { recipient_email } = req.body;
+  const sql = 'UPDATE email_settings SET recipient_email = ? WHERE id = 1';
+  db.query(sql, [recipient_email], (err, result) => {
+    if (err) {
+      console.error('Error updating email settings:', err);
+      return res.status(500).send('Error updating email settings.');
+    }
+    res.status(200).send('Email settings updated successfully.');
+  });
+};
+
+module.exports = { logThreat, getThreats, getEmailSettings, updateEmailSettings };

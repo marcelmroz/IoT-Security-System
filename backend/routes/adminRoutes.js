@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const { authenticateJWT, authorizeRoles } = require('../middleware/authMiddleware');
+const threatController = require('../controllers/threatController');
 
 router.get('/users', authenticateJWT, authorizeRoles(['admin', 'super-admin']), (req, res) => {
   User.getUsers((err, results) => {
@@ -39,5 +40,8 @@ router.patch('/users/:id/role', authenticateJWT, authorizeRoles(['admin', 'super
     });
   });
 });
+
+router.get('/email-settings', authenticateJWT, authorizeRoles(['admin', 'super-admin']), threatController.getEmailSettings);
+router.post('/email-settings', authenticateJWT, authorizeRoles(['admin', 'super-admin']), threatController.updateEmailSettings);
 
 module.exports = router;

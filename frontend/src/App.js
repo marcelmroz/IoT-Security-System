@@ -26,18 +26,11 @@ const App = () => {
   const setTokenInStorage = (token) => {
     localStorage.setItem('token', token);
     setToken(token);
-    toast.success("Login successful!");
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
-    toast.success("Logout successful!");
   };
 
   return (
     <Router>
-      <Header token={token} setToken={setToken} role={role} handleLogout={handleLogout} />
+      <Header token={token} setToken={setToken} role={role} />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/login" element={<Login setToken={setTokenInStorage} />} />

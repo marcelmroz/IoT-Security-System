@@ -4,6 +4,6 @@ const threatController = require('../controllers/threatController');
 const { authenticateJWT, authorizeRoles } = require('../middleware/authMiddleware');
 
 router.post('/log', authenticateJWT, threatController.logThreat);
-router.get('/history', authenticateJWT, authorizeRoles(['admin', 'super-admin', 'approved-user']), threatController.getThreats);
+router.get('/history', authenticateJWT, authorizeRoles(['admin', 'user', 'approved-user', 'super-admin']), threatController.getThreats);
 
 module.exports = router;

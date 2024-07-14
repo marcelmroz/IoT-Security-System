@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import '../styles/AdminPanel.css'; 
+import '../styles/AdminPanel.css';
 
 const AdminPanel = () => {
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [newRole, setNewRole] = useState('');
+  const [recipientEmail, setRecipientEmail] = useState('');
 
   useEffect(() => {
     axios.get('/api/admin/users', {
@@ -20,12 +21,24 @@ const AdminPanel = () => {
     .catch(error => {
       console.error('Error fetching users:', error);
     });
+
+    axios.get('/api/admin/email-settings', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(response => {
+      setRecipientEmail(response.data.recipient_email);
+    })
+    .catch(error => {
+      console.error('Error fetching email settings:', error);
+    });
   }, []);
 
   const handleRoleChange = () => {
     const user = users.find(u => u.id === selectedUserId);
 
-    if (user.role === 'super-admin') {
+    if (user.role === 'super-admin' && localStorage.getItem('role') !== 'super-admin') {
       toast.error('You are not allowed to change the role of the super-admin.');
       return;
     }
@@ -45,14 +58,29 @@ const AdminPanel = () => {
     });
   };
 
+  const handleEmailChange = () => {
+    axios.post('/api/admin/email-settings', { recipient_email: recipientEmail }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(response => {
+      toast.success('Recipient email updated successfully');
+    })
+    .catch(error => {
+      console.error('Error updating recipient email:', error);
+      toast.error('Error updating recipient email');
+    });
+  };
+
   return (
     <div className="admin-panel">
       <h2>Admin Panel</h2>
       <ul>
         {users.map(user => (
           <li key={user.id}>
-            <span>{user.email} - {user.role}</span>
-            {user.role !== 'super-admin' && (
+            {user.email} - {user.role}
+            {(user.role !== 'super-admin' || localStorage.getItem('role') === 'super-admin') && (
               <button onClick={() => setSelectedUserId(user.id)}>Change Role</button>
             )}
           </li>
@@ -70,6 +98,17 @@ const AdminPanel = () => {
           <button onClick={handleRoleChange}>Update Role</button>
         </div>
       )}
+      <div className="email-change-form">
+        <h3>Update Recipient Email for Threat Logs</h3>
+        <input
+          type="email"
+          value={recipientEmail}
+          onChange={(e) => setRecipientEmail(e.target.value)}
+          placeholder="Recipient Email"
+          required
+        />
+        <button onClick={handleEmailChange}>Update Email</button>
+      </div>
     </div>
   );
 };
