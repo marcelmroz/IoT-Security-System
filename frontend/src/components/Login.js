@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import '../styles/AuthForm.css';
 
 const Login = ({ setToken }) => {
@@ -15,8 +16,16 @@ const Login = ({ setToken }) => {
       setToken(response.data.token);
       localStorage.setItem('token', response.data.token);
       navigate('/');
+      toast.success('Login successful!');
     } catch (error) {
       console.error('Login error', error);
+      if (error.response && error.response.status === 403) {
+        toast.error('Your account is not verified. Please check your email to verify your account.');
+      } else if (error.response && error.response.status === 401) {
+        toast.error('Invalid email or password.');
+      } else {
+        toast.error('Login failed.');
+      }
     }
   };
 

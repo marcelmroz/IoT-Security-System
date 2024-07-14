@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import '../styles/AuthForm.css';
 
 const Register = () => {
@@ -12,10 +13,11 @@ const Register = () => {
     e.preventDefault();
     try {
       await axios.post('/api/auth/register', { email, password });
-      alert('User registered successfully');
+      toast.success('Registration successful. Please check your email to verify your account.');
       navigate('/login');
     } catch (error) {
       console.error('Registration error', error);
+      toast.error('Registration failed.');
     }
   };
 

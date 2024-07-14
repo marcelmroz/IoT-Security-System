@@ -1,10 +1,8 @@
 const db = require('../config/db');
-const bcrypt = require('bcryptjs');
 
-const createUser = (email, password, role = 'user', callback) => {
-  const hashedPassword = bcrypt.hashSync(password, 8);
-  const sql = 'INSERT INTO users (email, password, role) VALUES (?, ?, ?)';
-  db.query(sql, [email, hashedPassword, role], callback);
+const createUser = (email, password, role = 'user', verified = false, callback) => {
+  const sql = 'INSERT INTO users (email, password, role, verified) VALUES (?, ?, ?, ?)';
+  db.query(sql, [email, password, role, verified], callback);
 };
 
 const findUserByEmail = (email, callback) => {
@@ -27,4 +25,9 @@ const updateUserRole = (id, role, callback) => {
   db.query(sql, [role, id], callback);
 };
 
-module.exports = { createUser, findUserByEmail, findUserById, getUsers, updateUserRole };
+const verifyUser = (email, callback) => {
+  const sql = 'UPDATE users SET verified = true WHERE email = ?';
+  db.query(sql, [email], callback);
+};
+
+module.exports = { createUser, findUserByEmail, findUserById, getUsers, updateUserRole, verifyUser };
