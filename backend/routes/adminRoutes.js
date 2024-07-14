@@ -17,7 +17,7 @@ router.patch('/users/:id/role', authenticateJWT, authorizeRoles(['admin', 'super
   const { id } = req.params;
   const { role } = req.body;
 
-  if (!['user', 'approved-user', 'admin', 'super-admin'].includes(role)) {
+  if (!['user', 'approved-user', 'admin'].includes(role)) {
     return res.status(400).send('Invalid role.');
   }
 

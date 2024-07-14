@@ -25,7 +25,7 @@ const AdminPanel = () => {
   const handleRoleChange = () => {
     const user = users.find(u => u.id === selectedUserId);
 
-    if (user.role === 'super-admin' && localStorage.getItem('role') !== 'super-admin') {
+    if (user.role === 'super-admin') {
       toast.error('You are not allowed to change the role of the super-admin.');
       return;
     }
@@ -52,7 +52,7 @@ const AdminPanel = () => {
         {users.map(user => (
           <li key={user.id}>
             <span>{user.email} - {user.role}</span>
-            {(user.role !== 'super-admin' || localStorage.getItem('role') === 'super-admin') && (
+            {user.role !== 'super-admin' && (
               <button onClick={() => setSelectedUserId(user.id)}>Change Role</button>
             )}
           </li>
@@ -66,7 +66,6 @@ const AdminPanel = () => {
             <option value="user">User</option>
             <option value="approved-user">Approved User</option>
             <option value="admin">Admin</option>
-            <option value="super-admin">Super Admin</option>
           </select>
           <button onClick={handleRoleChange}>Update Role</button>
         </div>
