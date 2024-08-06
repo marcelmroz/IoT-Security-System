@@ -1,6 +1,6 @@
 # IoT Security System
 
-This repository contains the source code for an IoT Security System, which uses an ESP32 device equipped with an HC-SR04 ultrasonic sensor to monitor and manage access to a secure area. The system includes a backend developed in Node.js and a frontend built with React.
+IoT Security System uses an ESP32 device equipped with an HC-SR04 ultrasonic sensor to monitor and manage access to a secure area. The system includes a backend developed in Node.js and a frontend built with React.
 
 ## Features
 
