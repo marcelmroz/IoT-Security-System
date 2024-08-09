@@ -16,7 +16,7 @@
     "jsonwebtoken": "^9.0.2",
     "moment-timezone": "^0.5.45",
     "mysql2": "^3.9.7",
-    "nodemailer": "^6.9.13",
+    "nodemailer": "^6.9.14",
     "socket.io": "^4.7.5"
   }
 }
